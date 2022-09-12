@@ -31,28 +31,41 @@ function App() {
     <div className="App">
 		<h1>Hello world, from Kite</h1>
 		<hr></hr>
-		<ul>
-			{list.map(function (item) {
-			return <li>{item.title}</li>;
-			})}
-		</ul>
-		<ul>
-			{list.map(function (item) {
-			return <li key={item.objectID}>{item.title}</li>;
-			})}
-		</ul>		
-		<p>
-			{list[0].title}
-		</p>
-
-		<p>
-			{greetings.greeting}, {greetings.title}
-		</p>
-
-		<label htmlFor='search'>Search: </label>
-		<input id="search" type="text"/>
+		<List />	
+		<Search />
     </div>
   );
 }
+
+function Search(){
+   return (
+      <div>
+         <label htmlFor="search">Search: </label>
+         <input id="search" type="text" />
+      </div>
+   )
+}
+function List() {
+	return (
+		<ul>
+			{list.map(function(item){
+				return (
+					<li key={item.objectID}>
+						<span>
+							<a href={item.url}>{item.title}</a>
+						</span>
+						<span>{item.author}</span>
+						<span>{item.num_comments}</span>
+						<span>{item.points}</span>
+					</li>
+				)
+			})}
+		</ul>
+	)
+} 
+
+
+
+
 
 export default App;
