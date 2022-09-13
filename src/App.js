@@ -68,19 +68,31 @@ const initialStories = [
 ];
 
 const getAsyncStories = () => 
-   Promise.resolve({data: {stories: initialStories}})
+   new Promise((resolve) => 
+      setTimeout(
+            resolve({data: {stories: initialStories}}),
+            2000
+         )
+      )
 
 // MAIN APP
 const App = () => {
    const [stories, setStories] = React.useState([]);
-
+   const [isLoading, setIsLoading] = React.useState(false);
+   const [isError, setIsError] = React.useState(false);
    React.useEffect(() => {
-      getAsyncStories().then(result => {
-         setStories(result.data.stories)
-      })
-   })
+      setIsLoading(true);
 
-   const [searchTerm, setSearchTerm] = useSemiPersistentState('search','React');
+      getAsyncStories().then((result) => {
+      setStories(result.data.stories);
+      setIsLoading(false);
+      }).catch(() => setIsError(true));
+   }, []);
+      
+
+   
+
+   const [searchTerm, setSearchTerm] = useSemiPersistentState('search','r');
 
    const handleRemoveStory = (item) => {
       const newStories = stories.filter(
@@ -99,7 +111,7 @@ const App = () => {
 
 
   return (
-    <div className="App">
+   <div className="App">
 		<h1>Hello world, from Kite</h1>
 		<hr></hr>
 		<InputWithLabel
@@ -108,10 +120,16 @@ const App = () => {
          Searching for {searchTerm}
       </p>
       <hr></hr>
-		<List list={searchedStories} onRemoveItem={handleRemoveStory}/>
-      {console.log("App renders")}
+      {isLoading ? (
+         <p>Loading...</p>
+      ) : <List 
+         list={searchedStories} 
+         onRemoveItem={handleRemoveStory}/>
+      }
+
+		
 			
-    </div>
+   </div>
     
   );
 }
