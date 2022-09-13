@@ -24,7 +24,11 @@ const App = () => {
       objectID: 1,
       }];
 
-   const [searchTerm, setSearchTerm] = React.useState('');
+   const [searchTerm, setSearchTerm] = React.useState(localStorage.getItem('search') || 'React');
+
+   React.useEffect(() => {
+      localStorage.setItem('search', searchTerm);
+   }, [searchTerm])
 
    const handleSearch = (event) => {
       setSearchTerm(event.target.value);
@@ -62,14 +66,14 @@ const Search = ({search, onSearch}) => {
    )
 }
 
-const Item = ({title, url, author, num_comments, points}) => (
+const Item = ({item}) => (
    <li>
       <span>
-         <a  href={url}>{title}</a>
+         <a  href={item.url}>{item.title}</a>
       </span>
-      <span>{author}</span>
-      <span>{num_comments}</span>
-      <span>{points}</span>
+      <span>{item.author}</span>
+      <span>{item.num_comments}</span>
+      <span>{item.points}</span>
       {console.log("Item accessed..")}
    </li>
 )
@@ -78,7 +82,7 @@ function List({list}) {
 		<ul>
 			{list.map((item) => {
 				return(
-					<Item key={item.objectID}{...item} />
+					<Item key={item.objectID} item={item} />
 				)
 			})}
          {console.log("List updating")}
