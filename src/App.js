@@ -54,7 +54,7 @@ const App = () => {
 		<h1>Hello world, from Kite</h1>
 		<hr></hr>
 		<InputWithLabel
-         id="search" label="Search" value={searchTerm} onInputChange={handleSearch} />
+         id="search" label="Search" value={searchTerm} onInputChange={handleSearch}><strong>Search: </strong></InputWithLabel>
       <p>
          Searching for {searchTerm}
       </p>
@@ -67,9 +67,9 @@ const App = () => {
   );
 }
 
-const InputWithLabel = ({id, label, value, type = "text", onInputChange}) => (
+const InputWithLabel = ({id, label, value, type = "text", onInputChange, children}) => (
    <>
-      <label htmlFor={id}>{label}</label> & nbsp;
+      <label htmlFor={id}>{children}</label>
       <input id={id} type={type} value={value} onChange={onInputChange} />
    </>
 )
