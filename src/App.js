@@ -38,6 +38,7 @@ const App = () => {
       return story.title.toLowerCase().includes(searchTerm.toLowerCase())
    })
 
+
   return (
     <div className="App">
 		<h1>Hello world, from Kite</h1>
