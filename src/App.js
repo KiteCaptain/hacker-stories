@@ -1,54 +1,22 @@
 import * as React from 'react';
 
 const initialStories = [
-   {
-   title: 'React',
-   url: 'https://reactjs.org/',
-   author: 'Jordan Walke',
-   num_comments: 3,
-   points: 4,
-   objectID: 0,
-   },  
-   {
-   title: 'Redux',
-   url: 'https://redux.js.org/',
-   author: 'Dan Abramov, Andrew Clark',
-   num_comments: 2,
-   points: 5,
-   objectID: 1,
-   },
-   {
-   title: 'Foxy',
-   url: 'https://redux.js.org/',
-   author: 'Dan Abramov, Andrew Clark',
-   num_comments: 2,
-   points: 5,
-   objectID: 2,
-   },
-   {
-   title: 'Zasgoat',
-   url: 'https://redux.js.org/',
-   author: 'Kite Abramov, Andrew Cernegie',
-   num_comments: 2,
-   points: 5,
-   objectID: 3,
-   },
-   {
-   title: 'Nukvisp',
-   url: 'https://redux.js/',
-   author: 'Dan Scott, Clark Undeson',
-   num_comments: 2,
-   points: 5,
-   objectID: 4,
-   },
-   {
-   title: 'Redux',
-   url: 'https://redux.js.org/',
-   author: 'Mr John, Doe Clark',
-   num_comments: 2,
-   points: 5,
-   objectID: 5,
-   }
+  {
+    title: 'React',
+    url: 'https://reactjs.org/',
+    author: 'Jordan Walke',
+    num_comments: 3,
+    points: 4,
+    objectID: 0,
+  },
+  {
+    title: 'Redux',
+    url: 'https://redux.js.org/',
+    author: 'Dan Abramov, Andrew Clark',
+    num_comments: 2,
+    points: 5,
+    objectID: 1,
+  },
 ];
 
 const getAsyncStories = () =>
@@ -73,18 +41,37 @@ const useSemiPersistentState = (key, initialState) => {
 
 const storiesReducer = (state, action) => {
   switch (action.type) {
-    case 'SET_STORIES':
-      return action.payload;
+    case 'STORIES_FETCH_INIT':
+      return {
+        ...state,
+        isLoading: true,
+        isError: false,
+      };
+    case 'STORIES_FETCH_SUCCESS':
+      return {
+        ...state,
+        isLoading: false,
+        isError: false,
+        data: action.payload,
+      };
+    case 'STORIES_FETCH_FAILURE':
+      return {
+        ...state,
+        isLoading: false,
+        isError: true,
+      };
     case 'REMOVE_STORY':
-      return state.filter(
-        (story) => action.payload.objectID !== story.objectID
-      );
+      return {
+        ...state,
+        data: state.data.filter(
+          (story) => action.payload.objectID !== story.objectID
+        ),
+      };
     default:
       throw new Error();
   }
 };
 
-// <============= MAIN APP ===========>
 const App = () => {
   const [searchTerm, setSearchTerm] = useSemiPersistentState(
     'search',
@@ -93,23 +80,22 @@ const App = () => {
 
   const [stories, dispatchStories] = React.useReducer(
     storiesReducer,
-    []
+    { data: [], isLoading: false, isError: false }
   );
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [isError, setIsError] = React.useState(false);
 
   React.useEffect(() => {
-    setIsLoading(true);
+    dispatchStories({ type: 'STORIES_FETCH_INIT' });
 
     getAsyncStories()
       .then((result) => {
         dispatchStories({
-          type: 'SET_STORIES',
+          type: 'STORIES_FETCH_SUCCESS',
           payload: result.data.stories,
         });
-        setIsLoading(false);
       })
-      .catch(() => setIsError(true));
+      .catch(() =>
+        dispatchStories({ type: 'STORIES_FETCH_FAILURE' })
+      );
   }, []);
 
   const handleRemoveStory = (item) => {
@@ -123,13 +109,13 @@ const App = () => {
     setSearchTerm(event.target.value);
   };
 
-  const searchedStories = stories.filter((story) =>
+  const searchedStories = stories.data.filter((story) =>
     story.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
     <div>
-      <h1>Hello worls, from Kite</h1>
+      <h1>Hello world, from Kite</h1>
 
       <InputWithLabel
         id="search"
@@ -142,9 +128,9 @@ const App = () => {
 
       <hr />
 
-      {isError && <p>Something went wrong ...</p>}
+      {stories.isError && <p>Something went wrong ...</p>}
 
-      {isLoading ? (
+      {stories.isLoading ? (
         <p>Loading ...</p>
       ) : (
         <List
