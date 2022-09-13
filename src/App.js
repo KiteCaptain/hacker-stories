@@ -38,7 +38,10 @@ const App = () => {
     <div className="App">
 		<h1>Hello world, from Kite</h1>
 		<hr></hr>
-		<Search onSearch={handleSearch} />
+		<Search search={searchTerm} onSearch={handleSearch} />
+      <p>
+         Searching for {searchTerm}
+      </p>
       <hr></hr>
 		<List list={searchedStories} />
       {console.log("App renders")}
@@ -48,36 +51,37 @@ const App = () => {
   );
 }
 
-const Search = (props) => {
+const Search = ({search, onSearch}) => {
    return (
       <div>
          <label htmlFor="search">Search: </label>
-         <input id="search" type="text" onChange={props.onSearch}/>
+         <input id="search" type="text" onChange={onSearch} value={search}/>
          
          {console.log("Searching...")}
       </div>
    )
 }
 
-const Item = (props) => (
+const Item = ({title, url, author, num_comments, points}) => (
    <li>
       <span>
-         <a  href={props.item.url}>{props.item.title}</a>
+         <a  href={url}>{title}</a>
       </span>
-      <span>{props.item.author}</span>
-      <span>{props.item.num_comments}</span>
-      <span>{props.item.points}</span>
-
+      <span>{author}</span>
+      <span>{num_comments}</span>
+      <span>{points}</span>
+      {console.log("Item accessed..")}
    </li>
 )
-function List(props) {
+function List({list}) {
 	return (
 		<ul>
-			{props.list.map((item) => {
+			{list.map((item) => {
 				return(
-					<Item key={item.objectID} item={item} />
+					<Item key={item.objectID}{...item} />
 				)
 			})}
+         {console.log("List updating")}
 		</ul>
 	)
 } 
