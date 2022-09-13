@@ -22,34 +22,42 @@ const list = [
 
 
 function App() {
-  const greetings ={
-    greeting: "Hello",
-    title: "React"
-  }
+//   const greetings ={
+//     greeting: "Hello",
+//     title: "React"
+//   }
 
   return (
     <div className="App">
 		<h1>Hello world, from Kite</h1>
 		<hr></hr>
-		<List />	
 		<Search />
+		<List />
+		<List />	
+		<List />	
+		<List />	
+		<List />	
+		<List />	
     </div>
   );
 }
 
-function Search(){
+const Search = () => {
+   const handleChange = (event) => {
+      console.log(event.target.value)
+   }
    return (
       <div>
          <label htmlFor="search">Search: </label>
-         <input id="search" type="text" />
+         <input id="search" type="text" onChange={handleChange}/>
       </div>
    )
 }
 function List() {
 	return (
 		<ul>
-			{list.map(function(item){
-				return (
+			{list.map((item) => {
+				return(
 					<li key={item.objectID}>
 						<span>
 							<a href={item.url}>{item.title}</a>
@@ -69,3 +77,4 @@ function List() {
 
 
 export default App;
+
