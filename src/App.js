@@ -1,3 +1,4 @@
+import { isFocusable } from '@testing-library/user-event/dist/utils';
 import * as React from 'react';
 import './App.css';
 
@@ -67,23 +68,32 @@ const App = () => {
   );
 }
 
-const InputWithLabel = ({id, label, value, type = "text", onInputChange, children}) => (
+const InputWithLabel = ({id, label, value, type = "text", onInputChange, children, isFocused}) =>{
+   const inputRef = React.useRef();
+
+   React.useEffect(() => {
+      if (isFocused && inputRef.current) {
+         inputRef.current.focus();        
+      }
+   }, [isFocused])
+
+   return (
    <>
       <label htmlFor={id}>{children}</label>
-      <input id={id} type={type} value={value} onChange={onInputChange} />
+      <input ref={inputRef} id={id} type={type} value={value} onChange={onInputChange} />
    </>
-)
+)}
 
-const Search = ({search, onSearch}) => {
-   return (
-      <>
-         <label htmlFor="search">Search: </label>
-         <input id="search" type="text" onChange={onSearch} value={search}/>
+// const Search = ({search, onSearch}) => {
+//    return (
+//       <>
+//          <label htmlFor="search">Search: </label>
+//          <input id="search" type="text" onChange={onSearch} value={search}/>
          
-         {console.log("Searching...")}
-      </>
-   )
-}
+//          {console.log("Searching...")}
+//       </>
+//    )
+// }
 
 const Item = ({item}) => (
    <li>
