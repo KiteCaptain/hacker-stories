@@ -31,7 +31,7 @@ const App = () => {
    }
 
    const searchedStories = stories.filter(function (story) {
-      return story.title.includes(searchTerm)
+      return story.title.toLowerCase().includes(searchTerm.toLowerCase())
    })
 
   return (
@@ -40,7 +40,7 @@ const App = () => {
 		<hr></hr>
 		<Search onSearch={handleSearch} />
       <hr></hr>
-		<List list={stories} />
+		<List list={searchedStories} />
       {console.log("App renders")}
 			
     </div>
