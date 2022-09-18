@@ -60,21 +60,9 @@ const App = () => {
     { data: [], isLoading: false, isError: false }
   );
 
-  const handleFetchStories = React.useCallback(() => {
-    if (!searchTerm) return;
+ 
 
-    dispatchStories({type: 'STORIES_FETCH_INIT'});
-
-    fetch(`${API_ENDPOINT} ${searchTerm}`)
-    .then((response) => response.json())
-    .then((result) => {
-      dispatchStories({
-        type: 'STORIES_FETCH_SUCCESS',
-        payload: result.hits,
-      });
-    })
-    .catch(() => dispatchStories({type: 'STORIES_FETCH_FAILURE'}))
-  }, [searchTerm])
+  
 
   const handleRemoveStory = (item) => {
     dispatchStories({
@@ -86,6 +74,33 @@ const App = () => {
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
   };
+  const [url, setUrl] = React.useState(
+    `${API_ENDPOINT}${searchTerm}`
+  )
+  const handleFetchStories = React.useCallback(() => {
+
+    dispatchStories({type: 'STORIES_FETCH_INIT'});
+
+    fetch(url)
+    .then((response) => response.json())
+    .then((result) => {
+      dispatchStories({
+        type: 'STORIES_FETCH_SUCCESS',
+        payload: result.hits,
+    });
+  })
+    .catch(() => 
+     dispatchStories({type: 'STORIES_FETCH_FAILURE'})
+    );
+}, [url]);
+
+  const handleSearchInput = (event) => {
+    setSearchTerm(event.target.value);
+  }
+
+  const handleSearchSubmit = () => {
+    setUrl(`${API_ENDPOINT}${searchTerm}`)
+  }
 
   React.useEffect(() => {
     handleFetchStories();
@@ -99,12 +114,17 @@ const App = () => {
         id="search"
         value={searchTerm}
         isFocused
-        onInputChange={handleSearch}
+        onInputChange={handleSearchInput}
       >
         <strong>Search:</strong>
       </InputWithLabel>
-
       <hr />
+      <button
+        type = "button"
+        disabled = {!searchTerm}
+        onClick={handleSearchSubmit}>
+        Submit
+      </button>
 
       {stories.isError && <p>Something went wrong ...</p>}
 
