@@ -60,7 +60,7 @@ const App = () => {
     { data: [], isLoading: false, isError: false }
   );
 
-  React.useEffect(() => {
+  const handleFetchStories = React.useCallback(() => {
     if (!searchTerm) return;
 
     dispatchStories({type: 'STORIES_FETCH_INIT'});
@@ -86,6 +86,10 @@ const App = () => {
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
   };
+
+  React.useEffect(() => {
+    handleFetchStories();
+  },[handleFetchStories])
 
   return (
     <div>
