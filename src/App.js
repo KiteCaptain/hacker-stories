@@ -78,21 +78,22 @@ const App = () => {
   const [url, setUrl] = React.useState(
     `${API_ENDPOINT}${searchTerm}`
   )
-  const handleFetchStories = React.useCallback(() => {
 
-    dispatchStories({type: 'STORIES_FETCH_INIT'});
+  // ALternative syntax for handling promises
+  const handleFetchStories = React.useCallback(async() => {
 
-    axios.get(url)
-    .then((result) => {
+      dispatchStories({type: 'STORIES_FETCH_INIT'});
+      try {
+      const result = await axios.get(url);
       dispatchStories({
         type: 'STORIES_FETCH_SUCCESS',
         payload: result.data.hits,
-    });
-  })
-    .catch(() => 
-     dispatchStories({type: 'STORIES_FETCH_FAILURE'})
-    );
-}, [url]);
+      });
+      } catch {
+        dispatchStories({type: 'STORIES_FETCH_FAILURE'})
+      }
+    }, [url]); 
+  
 
   const handleSearchInput = (event) => {
     setSearchTerm(event.target.value);
